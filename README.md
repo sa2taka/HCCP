@@ -1,5 +1,7 @@
 # HCCP
 
+HTML5 Category Client-Model Parser.
+
 ## Project setup
 ```
 npm install
