@@ -1,18 +1,46 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
-  </div>
+  <v-layout justify-center mt-9>
+    <prism-editor v-model="code" language="html" line-numbers class="editor" />
+  </v-layout>
 </template>
 
-<script>
-// @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
+<script lang="ts">
+import 'prismjs';
+import 'prismjs/themes/prism.css';
+// @ts-ignore
+import PrismEditor from 'vue-prism-editor';
+import 'vue-prism-editor/dist/VuePrismEditor.css';
 
-export default {
-  name: "home",
+import { Component, Vue } from 'vue-property-decorator';
+@Component({
   components: {
-    HelloWorld
-  }
-};
+    PrismEditor,
+  },
+})
+export default class Home extends Vue {
+  public code: string | null = null;
+}
 </script>
+
+<style lang="scss">
+.editor {
+  width: 80%;
+  height: 640px;
+  max-height: 80%;
+}
+
+.v-application code:after,
+.v-application code:before {
+  content: none;
+}
+
+.v-application code {
+  background-color: none;
+  box-shadow: none;
+  color: none;
+  border-radius: none;
+  white-space: none;
+  font-size: none;
+  font-weight: 500;
+}
+</style>

@@ -1,6 +1,6 @@
-import Vue from "vue";
-import Vuex from "vuex";
-import createPersistedState from "vuex-persistedstate";
+import Vue from 'vue';
+import Vuex from 'vuex';
+import createPersistedState from 'vuex-persistedstate';
 
 Vue.use(Vuex);
 
@@ -10,14 +10,14 @@ interface RootState {
 
 const store = new Vuex.Store<RootState>({
   state: {
-    version: "1.0.0"
+    version: '1.0.0',
   },
   plugins: [
     createPersistedState({
-      key: "hccpState",
-      storage: window.sessionStorage
-    })
-  ]
+      key: 'hccpState',
+      storage: window.sessionStorage,
+    }),
+  ],
 });
 
 export default store;
