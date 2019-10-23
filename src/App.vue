@@ -1,29 +1,60 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
-  </div>
+  <v-app>
+    <v-app-bar app>
+      <v-toolbar-title class="headline text-uppercase">
+        <span>HCCP</span>
+      </v-toolbar-title>
+      <v-spacer></v-spacer>
+
+      <v-label :dark="isDark">Dark Mode</v-label>
+      <v-switch
+        v-model="isDark"
+        class="center-switch"
+        :dark="isDark"
+        id="dark-mode-switch"
+        color="secondary"
+      ></v-switch>
+    </v-app-bar>
+
+    <v-content id="main">
+      <router-view />
+    </v-content>
+  </v-app>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import HelloWorld from "./components/HelloWorld.vue";
+import { Component, Watch, Vue } from 'vue-property-decorator';
+import theme from '@/store/modules/theme';
 
-@Component({
-  components: {
-    HelloWorld
+@Component
+export default class App extends Vue {
+  public isDark: boolean = false;
+  public created() {
+    if (localStorage.theme) {
+      this.isDark = localStorage.theme === 'dark';
+      this.setTheme(this.isDark);
+    }
   }
-})
-export default class App extends Vue {}
+  @Watch('isDark')
+  public changedTheme(isDark: boolean) {
+    this.setTheme(isDark);
+  }
+  private setTheme(isDark: boolean) {
+    localStorage.theme = isDark ? 'dark' : 'light';
+    this.$vuetify.theme.dark = isDark;
+    theme.setTheme(isDark ? 'dark' : 'light');
+  }
+}
 </script>
-
-<style lang="scss">
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<style lang="scss" scoped>
+#main {
+  width: 90%;
+  position: relative;
+  margin: 0 auto;
+}
+.center-switch {
+  position: relative;
+  top: 12px;
+  margin-left: 4px;
 }
 </style>
