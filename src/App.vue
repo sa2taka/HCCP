@@ -12,6 +12,7 @@
         class="center-switch"
         :dark="isDark"
         id="dark-mode-switch"
+        color="secondary"
       ></v-switch>
     </v-app-bar>
 
