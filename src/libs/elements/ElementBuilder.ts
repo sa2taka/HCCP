@@ -48,9 +48,9 @@ namespace ElementBuilder {
 
   // Relationship Between Element And Category
   const Relationship: Record<string, Category> = {
-    a: {
-      context: [ContentCategoryType.Phrasing],
-      contentModel: [ContentCategoryType.Transparent],
+    p: {
+      context: [ContentCategoryType.Flow],
+      contentModel: [ContentCategoryType.Phrasing],
     },
   };
 }

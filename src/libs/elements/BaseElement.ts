@@ -76,11 +76,16 @@ export default class BaseElement {
       return false;
     }
 
-    return parentAllowModels.some((model) => {
+    return parentAllowModels.some((model: ContentCategoryType | string) => {
       if (typeof model === 'string') {
         return this.name === model;
       } else {
-        return this.context.includes(model);
+        return this.context.some((context: ContentCategoryType | string) => {
+          if (typeof context === 'string') {
+            return false;
+          }
+          return this.isIncludeCategory(context, model);
+        });
       }
     });
   }
@@ -88,11 +93,22 @@ export default class BaseElement {
   private isValidAsParentIsEmpty(): boolean {
     if (
       this.contentModel !== ContentCategoryType.Empty &&
-      this.contentModel.every((elm) => typeof elm === 'string')
+      this.contentModel.every(
+        (elm: ContentCategoryType | string) => typeof elm === 'string'
+      )
     ) {
       return false;
     } else {
       return true;
     }
+  }
+
+  private isIncludeCategory(
+    target: ContentCategoryType,
+    model: ContentCategoryType
+  ): boolean {
+    // TODO confirm
+
+    return false;
   }
 }
