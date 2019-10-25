@@ -59,28 +59,37 @@ export default class BaseElement {
     }
   }
 
-  //
   public isValid(): boolean {
     if (typeof this.parent === 'undefined') {
-      return this.isValidAsParentIsEmpty();
+      return this.isValidWhenParentIsEmpty();
     }
-
-    // The following code is general.
-    // Special scenes are implemented in inheritance.
-    const parentAllowModels = this.parent.contentModel;
 
     // If parent's children model(category model) is empty(nothing),
     // element is basically invalid.
     // An exception is the 'template' element.
-    if (parentAllowModels === ContentCategoryType.Empty) {
+    if (this.parent.contentModel === ContentCategoryType.Empty) {
       return false;
     }
 
-    return parentAllowModels.some((model: ContentCategoryType | string) => {
+    if (this.context === ContentCategoryType.Empty) {
+      return false;
+    }
+
+    return (
+      this.isValidAsParent(this.context, this.parent.contentModel) &&
+      this.isValidAsChild(this.context, this.parent.contentModel)
+    );
+  }
+
+  private isValidAsParent(
+    childContext: [ContentCategoryType | string],
+    parentContentModel: [ContentCategoryType | string]
+  ): boolean {
+    return parentContentModel.some((model: ContentCategoryType | string) => {
       if (typeof model === 'string') {
         return this.name === model;
       } else {
-        return this.context.some((context: ContentCategoryType | string) => {
+        return childContext.some((context: ContentCategoryType | string) => {
           if (typeof context === 'string') {
             return false;
           }
@@ -90,7 +99,31 @@ export default class BaseElement {
     });
   }
 
-  private isValidAsParentIsEmpty(): boolean {
+  private isValidAsChild(
+    childContext: [ContentCategoryType | string],
+    parentContentModel: [ContentCategoryType | string]
+  ): boolean {
+    return childContext.some((context: ContentCategoryType | string) => {
+      if (typeof context === 'string') {
+        if (typeof this.parent !== 'undefined') {
+          return this.parent.name === context;
+        } else {
+          return false;
+        }
+      } else {
+        return parentContentModel.some(
+          (model: ContentCategoryType | string) => {
+            if (typeof model === 'string') {
+              return false;
+            }
+            return this.isIncludeCategory(context, model);
+          }
+        );
+      }
+    });
+  }
+
+  private isValidWhenParentIsEmpty(): boolean {
     if (
       this.contentModel !== ContentCategoryType.Empty &&
       this.contentModel.every(
@@ -104,10 +137,17 @@ export default class BaseElement {
   }
 
   private isIncludeCategory(
-    target: ContentCategoryType,
-    model: ContentCategoryType
+    context: ContentCategoryType,
+    contentModel: ContentCategoryType
   ): boolean {
-    // TODO confirm
+    if (context === contentModel) {
+      return true;
+    }
+
+    // context has only flow or phrasing(, script supported and specified tag)
+    if (context === ContentCategoryType.Flow) {
+      return true;
+    }
 
     return false;
   }
